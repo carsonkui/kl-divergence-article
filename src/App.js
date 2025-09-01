@@ -4,6 +4,8 @@ import 'katex/dist/katex.min.css';
 import katex from 'katex';
 
 // Import graph components
+import TrueDistribution from './graphs/TrueDistribution';
+
 // import DistributionPlot from './graphs/DistributionPlot';
 // import SamplingAnimation from './graphs/SamplingAnimation';
 // import LikelihoodComparison from './graphs/LikelihoodComparison';
@@ -40,8 +42,7 @@ function App() {
           Assume we have a distribution, <Math>{`P_{\\text{true}}`}</Math>. It looks like this:
         </p>
         
-        <div className="visual-placeholder">
-        </div> 
+        <TrueDistribution/>
         
         <p>
           We can sample from the distribution, one by one.
@@ -149,6 +150,81 @@ function App() {
           that <Math>{`P_{\\text{guess}}`}</Math> models <Math>{`P_{\\text{true}}`}</Math> well. 
           The KL divergence can never be negative, because <Math>{`P_{\\text{true}}`}</Math> is 
           the best possible model of <Math>{`P_{\\text{true}}`}</Math>.
+        </p>
+
+        <h3>The Formula</h3>
+
+        <p>
+          How do we calculate the average lines of <Math>{`P_{\\text{true}}`}</Math> and <Math>{`P_{\\text{guess}}`}</Math>? Let's compute the average line of <Math>{`P_{\\text{guess}}`}</Math> at <Math>{`n=4`}</Math> to illustrate.
+        </p>
+
+        <div className="visual-placeholder">
+        </div> 
+
+        <p>
+          We start with the likelihoods at <Math>{`n=4`}</Math>. Remember, different colors are different trials.
+        </p>
+
+        <div className="visual-placeholder">
+        </div> 
+
+        <p>
+          Then, we convert each likelihood to the log domain.
+        </p>
+
+        <div className="visual-placeholder">
+        </div> 
+
+        <p>By the properties of log, this is equivalent to: </p>
+
+        <div className="visual-placeholder">
+        </div> 
+
+        <p>Finally, we average across trials.</p>
+
+        
+        {/* should NOT average across n */}
+        <div className="visual-placeholder">
+        </div> 
+
+        <p> 
+          As we scale the number of trials up to infinity, each of these terms approach the true average of <Math>{`\\log(P_{\\text{guess}}(X))`}</Math>. 
+          In statistics, we write this as <Math>{`E[\\log(P_{\\text{guess}}(X))]`}</Math>.
+        </p>
+
+        <div className="visual-placeholder">
+        </div> 
+
+        <p>
+          This generalizes to any value of <Math>{`n`}</Math>. 
+        </p>
+
+        {/* make a slider */}
+        <div className="visual-placeholder">
+        </div> 
+
+        For calculating the average line of <Math>{`P_{\\text{true}}`}</Math>, the process is exactly the same.
+
+        {/* make a slider */}
+        <div className="visual-placeholder">
+        </div> 
+
+        To calculate the KL divergence, we take the difference in slopes.
+
+        
+
+        <Math block>
+          {`\\text{KL}(P_{\\text{true}} \\,||\\, P_{\\text{guess}}) = E[\\log(P_{\\text{true}}(X))] - E[\\log(P_{\\text{guess}}(X))]`}
+        </Math>
+
+        <p>
+            And that's it! The KL divergence measures how different two probability distributions are. 
+            Or more precisely, it measures how well distribution <Math>{`P_{\\text{guess}}`}</Math> models 
+            data drawn from distribution <Math>{`P_{\\text{true}}`}</Math>.
+        </p>
+
+        <p>
+            Congratulations on making it to the end :). If you are hungry for more, the second section explains KL divergence using a complimentary algebraic approach.
         </p>
         
         <div className="fun-asides">
