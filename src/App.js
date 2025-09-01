@@ -5,6 +5,7 @@ import katex from 'katex';
 
 // Import graph components
 import TrueDistribution from './graphs/TrueDistribution';
+import TrueDistributionSampled from './graphs/TrueDistributionSampled';
 
 // import DistributionPlot from './graphs/DistributionPlot';
 // import SamplingAnimation from './graphs/SamplingAnimation';
@@ -45,11 +46,10 @@ function App() {
         <TrueDistribution/>
         
         <p>
-          We can sample from the distribution, one by one.
+          We can sample from the distribution one data point at a time (drag the slider).
         </p>
         
-        <div className="visual-placeholder">
-        </div> 
+        <TrueDistributionSampled/>
         
         <p>
           Each of these specific data points <Math>{`x_1, x_2, \\ldots, x_n`}</Math> have a certain 
