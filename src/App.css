@@ -1,38 +1,204 @@
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
   min-height: 100vh;
+  background-color: #f9f9f9;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Article container */
+.kl-article {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Typography */
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  text-align: center;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 15px;
+}
+
+h2 {
+  font-size: 1.8rem;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #34495e;
+}
+
+h3 {
+  font-size: 1.3rem;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #34495e;
+}
+
+p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: left;
+}
+
+/* Math display */
+.math-inline {
+  margin: 0 4px;
+  font-size: 1.05em;
+}
+
+.math-block {
+  margin: 30px 0;
+  text-align: center;
+  font-size: 1.2em;
+  overflow-x: auto;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+}
+
+/* Graph containers */
+.graph-container {
+  margin: 30px 0;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.visual-placeholder {
+  margin: 30px 0;
+}
+
+/* Controls and buttons */
+.controls {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
   color: white;
+  background-color: #3498db;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.App-link {
-  color: #61dafb;
+button:hover:not(:disabled) {
+  background-color: #2980b9;
 }
 
-@keyframes App-logo-spin {
+button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Special sections */
+.callout {
+  padding: 20px;
+  margin: 30px 0;
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  border-radius: 4px;
+  font-style: italic;
+  color: #856404;
+}
+
+.fun-asides {
+  padding: 20px;
+  margin: 30px 0;
+  background-color: #e8f4f8;
+  border-left: 4px solid #3498db;
+  border-radius: 4px;
+}
+
+.fun-asides h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.fun-asides ul {
+  margin-left: 20px;
+}
+
+.fun-asides li {
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+.conclusion {
+  margin-top: 50px;
+  padding: 30px;
+  background-color: #f0f7ff;
+  border-radius: 8px;
+  border: 2px solid #3498db;
+}
+
+.conclusion p:last-child {
+  font-style: italic;
+  color: #666;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+/* Animation for sampled values */
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(-10px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .kl-article {
+    padding: 20px 15px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  p {
+    font-size: 1rem;
+  }
+  
+  .graph-container {
+    padding: 15px;
+  }
+  
+  .controls {
+    flex-wrap: wrap;
   }
 }
