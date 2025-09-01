@@ -1,9 +1,10 @@
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import Plot from 'react-plotly.js';
 
 // Generate Gaussian distribution data
 const generateGaussianData = (mean, std, xMin, xMax, numPoints) => {
-  const data = [];
+  const xData = [];
+  const yData = [];
   const step = (xMax - xMin) / numPoints;
   
   for (let i = 0; i <= numPoints; i++) {
@@ -12,44 +13,69 @@ const generateGaussianData = (mean, std, xMin, xMax, numPoints) => {
     const y = (1 / (std * Math.sqrt(2 * Math.PI))) * 
               Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
     
-    data.push({
-      x: parseFloat(x.toFixed(2)),
-      probability: parseFloat(y.toFixed(4))
-    });
+    xData.push(x);
+    yData.push(y);
   }
   
-  return data;
+  return { x: xData, y: yData };
 };
 
-const data = generateGaussianData(3, 0.5, 0, 10, 100);
-
 const TrueDistribution = () => {
+  const data = generateGaussianData(3, 0.5, 0, 10, 100);
+  
+  const plotData = [
+    {
+      x: data.x,
+      y: data.y,
+      type: 'scatter',
+      mode: 'lines',
+      fill: 'tozeroy',
+      name: 'P_true',
+      line: { color: '#4CAF50' },
+      fillcolor: 'rgba(76, 175, 80, 0.3)'
+    }
+  ];
+  
+  const layout = {
+    width: undefined,
+    height: 200,
+    margin: { t: 10, r: 30, l: 40, b: 40 },
+    xaxis: {
+      range: [0, 10],
+      dtick: 1,
+      title: '',
+      showgrid: false,
+      zeroline: false
+    },
+    yaxis: {
+      range: [0, 1],
+      dtick: 0.2,
+      title: '',
+      showgrid: false,
+      zeroline: false
+    },
+    showlegend: true,
+    legend: {
+      x: 1,
+      xanchor: 'right',
+      y: 1
+    },
+    plot_bgcolor: 'white',
+    paper_bgcolor: 'white'
+  };
+  
+  const config = {
+    responsive: true,
+    displayModeBar: false
+  };
+  
   return (
-    <ResponsiveContainer width="100%" height={200}>
-      <AreaChart
-        width={500}
-        height={400}
-        data={data}
-        margin={{
-          top: 10,
-          right: 30,
-          left: 0,
-          bottom: 0,
-        }}
-      >
-        <XAxis 
-          dataKey="x" 
-          domain={[0, 10]}
-          ticks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-        />
-        <YAxis 
-          domain={[0, 1]}
-          ticks={[0, 0.2, 0.4, 0.6, 0.8, 1.0]}
-        />
-        <Tooltip />
-        <Area type="monotone" dataKey="probability" stroke="#8884d8" fill="#8884d8" />
-      </AreaChart>
-    </ResponsiveContainer>
+    <Plot
+      data={plotData}
+      layout={layout}
+      config={config}
+      style={{ width: '100%' }}
+    />
   );
 };
 
