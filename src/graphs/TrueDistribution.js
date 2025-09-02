@@ -1,5 +1,6 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
+import { DISTRIBUTION_PARAMS, GRAPH_SETTINGS } from '../data/constants';
 
 // Generate Gaussian distribution data
 const generateGaussianData = (mean, std, xMin, xMax, numPoints) => {
@@ -21,7 +22,13 @@ const generateGaussianData = (mean, std, xMin, xMax, numPoints) => {
 };
 
 const TrueDistribution = () => {
-  const data = generateGaussianData(3, 0.5, 0, 10, 100);
+  const data = generateGaussianData(
+    DISTRIBUTION_PARAMS.true.mean,
+    DISTRIBUTION_PARAMS.true.std,
+    GRAPH_SETTINGS.xRange[0],
+    GRAPH_SETTINGS.xRange[1],
+    GRAPH_SETTINGS.numPoints
+  );
   
   const plotData = [
     {
@@ -43,14 +50,18 @@ const TrueDistribution = () => {
     xaxis: {
       range: [0, 10],
       dtick: 1,
-      title: '',
+      // title: {
+      //   text: 'value',
+      // },
       showgrid: false,
       zeroline: false
     },
     yaxis: {
       range: [0, 1],
       dtick: 0.2,
-      title: '',
+      // title: {
+      //   text: 'likelihood',
+      // },
       showgrid: false,
       zeroline: false
     },
@@ -68,6 +79,7 @@ const TrueDistribution = () => {
     responsive: true,
     displayModeBar: false
   };
+
   
   return (
     <Plot

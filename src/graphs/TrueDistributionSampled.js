@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Plot from 'react-plotly.js';
+import { SAMPLE_POINTS, DISTRIBUTION_PARAMS, GRAPH_SETTINGS } from '../data/constants';
 
 // Generate Gaussian distribution data
 const generateGaussianData = (mean, std, xMin, xMax, numPoints) => {
@@ -22,17 +23,57 @@ const generateGaussianData = (mean, std, xMin, xMax, numPoints) => {
 
 const TrueDistributionSampled = () => {
   const [n, setN] = useState(0);
-  const samplePoints = [2.758, 3.289, 3.196, 2.735, 3.343, 2.933, 3.39, 3.304, 3.066, 2.75, 3.133, 2.676, 3.2, 2.884, 3.447, 2.978, 2.894, 2.145, 3.806, 3.586];
+  const [isPlaying, setIsPlaying] = useState(false);
+  const intervalRef = useRef(null);
+  const MAX_N = SAMPLE_POINTS.length;
   
-  const gaussianData = generateGaussianData(3, 0.5, 0, 10, 100);
+  const gaussianData = generateGaussianData(
+    DISTRIBUTION_PARAMS.true.mean, 
+    DISTRIBUTION_PARAMS.true.std, 
+    GRAPH_SETTINGS.xRange[0], 
+    GRAPH_SETTINGS.xRange[1], 
+    GRAPH_SETTINGS.numPoints
+  );
+  
+  // Animation effect
+  useEffect(() => {
+    if (isPlaying) {
+      intervalRef.current = setInterval(() => {
+        setN(prevN => {
+          if (prevN >= MAX_N) {
+            setIsPlaying(false);
+            return MAX_N;
+          }
+          return prevN + 1;
+        });
+      }, 50); // Adjust speed here (milliseconds between steps)
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    }
+    
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isPlaying]);
+  
+  const handlePlayPause = () => {
+    if (n >= MAX_N) {
+      setN(0);
+    }
+    setIsPlaying(!isPlaying);
+  };
   
   // Get the first n sample points
-  const visibleSamples = samplePoints.slice(0, n);
+  const visibleSamples = SAMPLE_POINTS.slice(0, n);
   
   // Calculate y-values for sample points based on Gaussian PDF
   const sampleYValues = visibleSamples.map(x => {
-    const mean = 3;
-    const std = 0.5;
+    const mean = DISTRIBUTION_PARAMS.true.mean;
+    const std = DISTRIBUTION_PARAMS.true.std;
     return (1 / (std * Math.sqrt(2 * Math.PI))) * 
            Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
   });
@@ -105,25 +146,47 @@ const TrueDistributionSampled = () => {
         config={config}
         style={{ width: '100%' }}
       />
-      <div style={{ marginTop: '20px' }}>
-        <label style={{ display: 'block', marginBottom: '10px', fontSize: '14px', color: '#333' }}>
-          n = {n}
-        </label>
+      <div >
         <input
-          type="range"
-          min="0"
-          max="20"
-          value={n}
-          onChange={(e) => setN(parseInt(e.target.value))}
-          style={{
-            width: '100%',
-            height: '5px',
-            borderRadius: '5px',
-            outline: 'none',
-            background: '#ddd',
-            cursor: 'pointer'
-          }}
+            type="range"
+            min="0"
+            max={MAX_N}
+            value={n}
+            onChange={(e) => {
+              setN(parseInt(e.target.value));
+              setIsPlaying(false);
+            }}
+            style={{
+              width: '100%',
+              height: '5px',
+              borderRadius: '5px',
+              outline: 'none',
+              background: '#ddd',
+              cursor: 'pointer'
+            }}
         />
+
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', marginTop: '10px', gap: '15px' }}>
+          <button
+            onClick={handlePlayPause}
+            style={{
+              padding: '6px 12px',
+              fontSize: '14px',
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              minWidth: '70px'
+            }}
+          >
+            {isPlaying ? 'Pause' : 'Play'}
+          </button>
+          <label style={{ fontSize: '14px', color: '#333' }}>
+            n = {n}
+          </label>
+        </div>
+
       </div>
     </div>
   );
