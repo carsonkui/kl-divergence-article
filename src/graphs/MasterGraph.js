@@ -232,7 +232,7 @@ const MasterGraph = () => {
   
   const layout = {
     width: undefined,
-    height: 250,
+    height: 400,
     margin: { t: 10, r: 30, l: 80, b: 40 },
     xaxis: {
       range: [0, 50],
@@ -293,7 +293,7 @@ const MasterGraph = () => {
         config={config}
         style={{ width: '100%' }}
       />
-      <div >
+      <div style={{ marginTop: '20px' }}>
         <input
             type="range"
             min="0"

@@ -142,7 +142,12 @@ function App() {
           As we sample data points one by one from <Math>{`P_{\\text{true}}`}</Math>, 
           let's plot how the total likelihood of <Math>{`P_{\\text{true}}`}</Math> evolves.
         </p>
-        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+        <div style={{ 
+          margin: '60px 0', 
+          padding: '0 80px', 
+          width: '100%', 
+          boxSizing: 'border-box'
+        }}>
           <TrueTrajectory/>
         </div>
 
@@ -150,7 +155,12 @@ function App() {
           The total likelihood gets small very fast. Let's switch to the log scale instead.
         </p>
 
-        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+        <div style={{ 
+          margin: '60px 0', 
+          padding: '0 80px', 
+          width: '100%', 
+          boxSizing: 'border-box'
+        }}>
           <TrueTrajectoryLog/>
         </div>
         <p>
@@ -162,7 +172,12 @@ function App() {
         </p>
         
         
-        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+        <div style={{ 
+          margin: '60px 0', 
+          padding: '0 80px', 
+          width: '100%', 
+          boxSizing: 'border-box'
+        }}>
           <CompareTrajectory/>
         </div>
         
@@ -179,7 +194,12 @@ function App() {
           NEW data points for <Math>{`x_1, \\ldots, x_n`}</Math>, we might get different trajectories.
         </p>
 
-        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+        <div style={{ 
+          margin: '60px 0', 
+          padding: '0 80px', 
+          width: '100%', 
+          boxSizing: 'border-box'
+        }}>
           <TwoTrialTrajectory/>
         </div>
         
@@ -187,7 +207,12 @@ function App() {
           Doing this many times over, a clear trend emerges. Plotting the averages, we have:
         </p>
         
-        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+        <div style={{ 
+          margin: '60px 0', 
+          padding: '0 80px', 
+          width: '100%', 
+          boxSizing: 'border-box'
+        }}>
           <AverageTrajectories/>
         </div>
         
@@ -198,7 +223,12 @@ function App() {
           You can also view the KL divergence as the difference in the averages' slopes.
         </p>
 
-        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+        <div style={{ 
+          margin: '80px 0', 
+          padding: '0 80px', 
+          width: '100%', 
+          boxSizing: 'border-box'
+        }}>
           <MasterGraph/>
         </div>
         
