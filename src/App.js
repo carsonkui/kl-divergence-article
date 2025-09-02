@@ -7,6 +7,7 @@ import katex from 'katex';
 import TrueDistribution from './graphs/TrueDistribution';
 import TrueDistributionSampled from './graphs/TrueDistributionSampled';
 import GuessDistributionWithData from './graphs/GuessDistributionWithData';
+import ManyDistributions from './graphs/ManyDistributions';
 
 // import DistributionPlot from './graphs/DistributionPlot';
 // import SamplingAnimation from './graphs/SamplingAnimation';
@@ -83,7 +84,8 @@ function App() {
         
         <h3>Some more examples:</h3>
         
-        <div className="visual-placeholder">
+        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+          <ManyDistributions/>
         </div> 
         
         <p>
