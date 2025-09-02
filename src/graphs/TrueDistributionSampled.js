@@ -22,10 +22,11 @@ const generateGaussianData = (mean, std, xMin, xMax, numPoints) => {
 };
 
 const TrueDistributionSampled = () => {
-  const [n, setN] = useState(0);
+  const MAX_N = SAMPLE_POINTS.length;
+  const [n, setN] = useState(MAX_N);
   const [isPlaying, setIsPlaying] = useState(false);
   const intervalRef = useRef(null);
-  const MAX_N = SAMPLE_POINTS.length;
+  
   
   const gaussianData = generateGaussianData(
     DISTRIBUTION_PARAMS.true.mean, 
@@ -77,6 +78,10 @@ const TrueDistributionSampled = () => {
     return (1 / (std * Math.sqrt(2 * Math.PI))) * 
            Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
   });
+
+  // multiply all probabilities together
+  const totalLikelihood = sampleYValues.reduce((total, curr) => total * curr, 1);
+  const totalLikelihoodString = totalLikelihood.toExponential(2).replace('e-', ' x 10<sup>-') + '</sup>';
   
   const plotData = [
     {
@@ -129,6 +134,22 @@ const TrueDistributionSampled = () => {
       xanchor: 'right',
       y: 1
     },
+    annotations: [
+      {
+        text: 'total likelihood = ' + totalLikelihoodString,
+        xref: 'paper',
+        yref: 'paper',
+        x: 1,
+        y: 0.5,
+        xanchor: 'right',
+        yanchor: 'top',
+        showarrow: false,
+        font: {
+          size: 12,
+          color: 'rgb(33, 140, 33)'
+        }
+      }
+    ],
     plot_bgcolor: 'white',
     paper_bgcolor: 'white'
   };

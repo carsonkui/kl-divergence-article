@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Plot from 'react-plotly.js';
 import { SAMPLE_POINTS, DISTRIBUTION_PARAMS, GRAPH_SETTINGS } from '../data/constants';
 
@@ -22,6 +22,11 @@ const generateGaussianData = (mean, std, xMin, xMax, numPoints) => {
 };
 
 const GuessDistributionWithData = () => {
+  const MAX_N = SAMPLE_POINTS.length;
+  const [n, setN] = useState(MAX_N);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const intervalRef = useRef(null);
+  
   
   const gaussianData = generateGaussianData(
     DISTRIBUTION_PARAMS.guess.mean, 
@@ -31,18 +36,50 @@ const GuessDistributionWithData = () => {
     GRAPH_SETTINGS.numPoints
   );
   
+  // Animation effect
+  useEffect(() => {
+    if (isPlaying) {
+      intervalRef.current = setInterval(() => {
+        setN(prevN => {
+          if (prevN >= MAX_N) {
+            setIsPlaying(false);
+            return MAX_N;
+          }
+          return prevN + 1;
+        });
+      }, 50); // Adjust speed here (milliseconds between steps)
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    }
+    
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isPlaying]);
   
-  const samples = SAMPLE_POINTS;
+  const handlePlayPause = () => {
+    if (n >= MAX_N) {
+      setN(0);
+    }
+    setIsPlaying(!isPlaying);
+  };
   
-  // Calculate y-values for sample points based on Gaussian PDF
-  const sampleYValues = samples.map(x => {
+  // Get the first n sample points
+  const visibleSamples = SAMPLE_POINTS.slice(0, n);
+  
+  // Calculate y-values for plotting
+  const sampleYValues = visibleSamples.map(x => {
     const mean = DISTRIBUTION_PARAMS.true.mean;
     const std = DISTRIBUTION_PARAMS.true.std;
     return (1 / (std * Math.sqrt(2 * Math.PI))) * 
            Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
   });
 
-  const guessProbabilities = samples.map(x => {
+  const sampleProbabilities = visibleSamples.map(x => {
     const mean = DISTRIBUTION_PARAMS.guess.mean;
     const std = DISTRIBUTION_PARAMS.guess.std;
     return (1 / (std * Math.sqrt(2 * Math.PI))) * 
@@ -50,22 +87,23 @@ const GuessDistributionWithData = () => {
   });
 
   // multiply all probabilities together
-  const totalGuessProbability = guessProbabilities.reduce((total, curr) => total * curr, 1);
+  const totalLikelihood = sampleProbabilities.reduce((total, curr) => total * curr, 1);
+  const totalLikelihoodString = totalLikelihood.toExponential(2).replace('e-', ' x 10<sup>-') + '</sup>';
   
   const plotData = [
     {
-      x: gaussianData.x,
-      y: gaussianData.y,
-      type: 'scatter',
-      mode: 'lines',
-      fill: 'tozeroy',
-      name: 'P_guess',
-      line: { color: 'rgb(140, 33, 33)' },
-      fillcolor: 'rgba(255, 55, 55, 0.3)',
-      hoverinfo: 'skip'
+        x: gaussianData.x,
+        y: gaussianData.y,
+        type: 'scatter',
+        mode: 'lines',
+        fill: 'tozeroy',
+        name: 'P_guess',
+        line: { color: 'rgb(140, 33, 33)' },
+        fillcolor: 'rgba(255, 55, 55, 0.3)',
+        hoverinfo: 'skip'
     },
     {
-      x: samples,
+      x: visibleSamples,
       y: sampleYValues,
       type: 'scatter',
       mode: 'markers',
@@ -74,7 +112,7 @@ const GuessDistributionWithData = () => {
         color: 'rgba(64, 64, 64, 0.7)',
         size: 8
       },
-      text: samples.map((x, i) => `x<sub>${i + 1}</sub>`),
+      text: visibleSamples.map((x, i) => `x<sub>${i + 1}</sub>`),
       hovertemplate: '<b style="font-size: 150%">%{text}</b><br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>'
     }
   ];
@@ -103,6 +141,22 @@ const GuessDistributionWithData = () => {
       xanchor: 'right',
       y: 1
     },
+    annotations: [
+      {
+        text: 'total likelihood = ' + totalLikelihoodString,
+        xref: 'paper',
+        yref: 'paper',
+        x: 1,
+        y: 0.5,
+        xanchor: 'right',
+        yanchor: 'top',
+        showarrow: false,
+        font: {
+          size: 12,
+          color: 'rgb(140, 33, 33)'
+        }
+      }
+    ],
     plot_bgcolor: 'white',
     paper_bgcolor: 'white'
   };
@@ -113,12 +167,56 @@ const GuessDistributionWithData = () => {
   };
   
   return (
+    <div>
       <Plot
         data={plotData}
         layout={layout}
         config={config}
         style={{ width: '100%' }}
       />
+      <div >
+        <input
+            type="range"
+            min="0"
+            max={MAX_N}
+            value={n}
+            onChange={(e) => {
+              setN(parseInt(e.target.value));
+              setIsPlaying(false);
+            }}
+            style={{
+              width: '100%',
+              height: '5px',
+              borderRadius: '5px',
+              outline: 'none',
+              background: '#ddd',
+              cursor: 'pointer'
+            }}
+        />
+
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', marginTop: '10px', gap: '15px' }}>
+          <button
+            onClick={handlePlayPause}
+            style={{
+              padding: '6px 12px',
+              fontSize: '14px',
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              minWidth: '70px'
+            }}
+          >
+            {isPlaying ? 'Pause' : 'Play'}
+          </button>
+          <label style={{ fontSize: '14px', color: '#333' }}>
+            n = {n}
+          </label>
+        </div>
+
+      </div>
+    </div>
   );
 };
 
