@@ -51,7 +51,7 @@ function App() {
         
         
         <p>
-          We can sample data points from the distribution one at a time.
+          We can sample data points from the distribution one at a time (drag the slider).
         </p>
         
         <div style={{ marginBottom: '20px', marginTop: '60px'}}>
@@ -60,7 +60,7 @@ function App() {
         
         <p>
           Each of these specific data points <Math>{`x_1, x_2, \\ldots, x_n`}</Math> had a certain 
-          probability of being sampled (their y-value on the graph). We write these probabilities as <Math>{`P_{\\text{true}}(x_1), P_{\\text{true}}(x_2), \\ldots, P_{\\text{true}}(x_n)`}</Math>. To calculate the probability of having sampled them all sequentially, we multiply the individual probabilities together:
+          likelihood of being sampled (their y-value on the graph). We write these likelihoods as <Math>{`P_{\\text{true}}(x_1), P_{\\text{true}}(x_2), \\ldots, P_{\\text{true}}(x_n)`}</Math>. To calculate the probability of having sampled them all sequentially, we multiply the individual probabilities together:
         </p>
         
         <Math block>
@@ -76,9 +76,9 @@ function App() {
         </div> 
         
         <p>
-          If <Math>{`P_{\\text{guess}}`}</Math> is not a good fit for the data, the likelihood 
+          If <Math>{`P_{\\text{guess}}`}</Math> is not a good fit for the data, the total likelihood 
           <Math>{`P_{\\text{guess}}(x_1) \\cdot P_{\\text{guess}}(x_2) \\cdot \\ldots \\cdot P_{\\text{guess}}(x_n)`}</Math>
-          will be lower. In this case, data points with a value near 2 or 3 are unexpected in the eyes of <Math>{'P_{\\text{guess}}'}</Math>, so their corresponding probabilities drag down the total likelihood.
+          will be lower. In this case, data points with a value near 2 or 3 are unexpected in the eyes of <Math>{'P_{\\text{guess}}'}</Math>, so their individual likelihoods drag down the total likelihood.
         </p>
         
         <h3>Some more examples:</h3>
@@ -87,9 +87,9 @@ function App() {
         </div> 
         
         <p>
-          The distribution <Math>{`P_{\\text{true}}`}</Math> should generally have the highest likelihood. 
+          The distribution <Math>{`P_{\\text{true}}`}</Math> should generally have the highest total likelihood. 
           The more data points we sample, the more clearly <Math>{`P_{\\text{true}}`}</Math> stands out as the best. 
-          Look up "maximum likelihood estimation" for more rigor.
+          Look up "maximum likelihood estimation" for a more rigorous explanation.
         </p>
         
         <p>
