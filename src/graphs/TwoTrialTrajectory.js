@@ -65,7 +65,7 @@ const plotTrial = (trialNum, n) => {
       mode: 'lines',
       name: 'P<sub>true</sub>',
       line: { 
-        color: `rgba(76, ${Math.min(255, Math.floor(175 + (80/15) * trialNum))}, ${Math.min(255, Math.floor(80 + (175/15) * trialNum))}, 0.4)`
+        color: `rgb(76, ${Math.min(255, Math.floor(175 + (80/15) * trialNum))}, ${Math.min(255, Math.floor(80 + (175/15) * trialNum))})`
       },
     },
     {
@@ -75,7 +75,7 @@ const plotTrial = (trialNum, n) => {
       mode: 'lines',
       name: 'P<sub>guess</sub>',
       line: { 
-        color: `rgba(255, ${Math.min(255, Math.floor(82 + (173/15) * trialNum))}, 82, 0.4)`
+        color: `rgb(255, ${Math.min(255, Math.floor(82 + (173/15) * trialNum))}, 82)` 
       },
     }
   ];
@@ -84,7 +84,7 @@ const plotTrial = (trialNum, n) => {
 };
 
 
-const MasterGraph = () => {
+const TwoTrialTrajectory = () => {
   const MAX_N = SAMPLE_POINTS.length;
   const [n, setN] = useState(Math.floor(MAX_N / 2));
   const [isPlaying, setIsPlaying] = useState(false);
@@ -125,12 +125,75 @@ const MasterGraph = () => {
     setIsPlaying(!isPlaying);
   };
 
-  let plotData = [];
 
-  for (let i = 0; i < 8; i++) {
-    plotData = [...plotData, ...plotTrial(i, n)];
+  const mean = DISTRIBUTION_PARAMS.true.mean;
+  const std = DISTRIBUTION_PARAMS.true.std;
+  const mean_guess = DISTRIBUTION_PARAMS.guess.mean;
+  const std_guess = DISTRIBUTION_PARAMS.guess.std;
+
+
+
+  // Calculate total likelihood for each number of data points - TRUE distribution
+  const y_values = [];
+  for (let i = 1; i <= n; i++) {
+    let total_likelihood = 1;
+    for (let j = 1; j <= i; j++) {
+        total_likelihood = (total_likelihood * 
+            (1 / (std * Math.sqrt(2 * Math.PI))) * 
+           Math.exp(-0.5 * Math.pow((SAMPLE_POINTS[j-1] - mean) / std, 2))
+        );
+    }
+    y_values.push(total_likelihood);
   }
 
+  // Calculate total likelihood for each number of data points - GUESS distribution
+  const y_values_guess = [];
+  for (let i = 1; i <= n; i++) {
+    let total_likelihood_guess = 1;
+    for (let j = 1; j <= i; j++) {
+        total_likelihood_guess = (total_likelihood_guess * 
+            (1 / (std_guess * Math.sqrt(2 * Math.PI))) * 
+           Math.exp(-0.5 * Math.pow((SAMPLE_POINTS[j-1] - mean_guess) / std_guess, 2))
+        );
+    }
+    y_values_guess.push(total_likelihood_guess);
+  }
+
+
+  const x_values = Array.from({length: n}, (_, i) => i + 1);
+
+
+
+  let total_likelihood = 1;
+  for (let j = 1; j <= n; j++) {
+      total_likelihood = (total_likelihood * 
+         (1 / (std * Math.sqrt(2 * Math.PI))) * 
+          Math.exp(-0.5 * Math.pow((SAMPLE_POINTS[j-1] - mean) / std, 2))
+      );
+    }
+  // multiply all probabilities together
+  
+  
+  let plotData = [
+    {
+      x: x_values,
+      y: y_values,
+      type: 'scatter',
+      mode: 'lines',
+      name: 'P<sub>true</sub>',
+      line: { color: '#4CAF50' },
+    },
+    {
+      x: x_values,
+      y: y_values_guess,
+      type: 'scatter',
+      mode: 'lines',
+      name: 'P<sub>guess</sub>',
+      line: { color: '#FF5252' },
+    },
+  ];
+
+  plotData = [...plotData, ...plotTrial(0, n)];
   
   const layout = {
     width: undefined,
@@ -225,4 +288,4 @@ const MasterGraph = () => {
   );
 };
 
-export default MasterGraph;
+export default TwoTrialTrajectory;

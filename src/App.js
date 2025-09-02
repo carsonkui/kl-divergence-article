@@ -11,6 +11,8 @@ import ManyDistributions from './graphs/ManyDistributions';
 import TrueTrajectory from './graphs/TrueTrajectory';
 import TrueTrajectoryLog from './graphs/TrueTrajectoryLog';
 import CompareTrajectory from './graphs/CompareTrajectory';
+import TwoTrialTrajectory from './graphs/TwoTrialTrajectory';
+import MasterGraph from './graphs/MasterGraph';
 
 // import DistributionPlot from './graphs/DistributionPlot';
 // import SamplingAnimation from './graphs/SamplingAnimation';
@@ -137,7 +139,7 @@ function App() {
         
         <p>
           As we sample data points one by one from <Math>{`P_{\\text{true}}`}</Math>, 
-          let's plot how the total likelihood evolves.
+          let's plot how the total likelihood of <Math>{`P_{\\text{true}}`}</Math> evolves.
         </p>
         <div style={{ marginBottom: '20px', marginTop: '60px'}}>
           <TrueTrajectory/>
@@ -167,21 +169,26 @@ function App() {
         
         <p>
           We can see <Math>{`P_{\\text{true}}`}</Math> is better at explaining the data because its 
-          line always remains higher than <Math>{`P_{\\text{guess}}`}</Math>'s. The rate at which 
+          total likelihood always remains higher than <Math>{`P_{\\text{guess}}`}</Math>'s. The rate at which 
           these two lines diverge is called the KL Divergence.
         </p>
         
         <p>
-          Well, with a small caveat. The lines we plotted were a bit random. If we sampled 
+          Well, almost. The lines we plotted were a bit random. If we sampled 
           NEW data points for <Math>{`x_1, \\ldots, x_n`}</Math>, we might get different trajectories.
         </p>
+
+        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+          <TwoTrialTrajectory/>
+        </div>
         
         <p>
           Doing this many times over, a clear trend emerges. Plotting the averages, we have:
         </p>
         
-        <div className="visual-placeholder">
-        </div> 
+        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+          <MasterGraph/>
+        </div>
         
         <p>
           The rate at which these <em>averages</em> diverge is the official KL divergence 
