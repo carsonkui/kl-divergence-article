@@ -60,7 +60,7 @@ export const DISTRIBUTION_PARAMS = {
   },
   guess: {
     mean: 4,
-    std: 0.7
+    std: 0.5
   }
 };
 

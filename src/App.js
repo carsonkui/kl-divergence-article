@@ -6,6 +6,7 @@ import katex from 'katex';
 // Import graph components
 import TrueDistribution from './graphs/TrueDistribution';
 import TrueDistributionSampled from './graphs/TrueDistributionSampled';
+import GuessDistributionWithData from './graphs/GuessDistributionWithData';
 
 // import DistributionPlot from './graphs/DistributionPlot';
 // import SamplingAnimation from './graphs/SamplingAnimation';
@@ -53,11 +54,13 @@ function App() {
           We can sample data points from the distribution one at a time.
         </p>
         
-        <TrueDistributionSampled/>
+        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+          <TrueDistributionSampled/>
+        </div>
         
         <p>
           Each of these specific data points <Math>{`x_1, x_2, \\ldots, x_n`}</Math> had a certain 
-          probability of being sampled. We write these probabilities as <Math>{`P_{\\text{true}}(x_1), P_{\\text{true}}(x_2), \\ldots, P_{\\text{true}}(x_n)`}</Math>. To calculate the probability of having sampled them all sequentially, we multiply the individual probabilities together:
+          probability of being sampled (their y-value on the graph). We write these probabilities as <Math>{`P_{\\text{true}}(x_1), P_{\\text{true}}(x_2), \\ldots, P_{\\text{true}}(x_n)`}</Math>. To calculate the probability of having sampled them all sequentially, we multiply the individual probabilities together:
         </p>
         
         <Math block>
@@ -68,13 +71,14 @@ function App() {
           This is the "total likelihood" of the data. Now assume we have a guess <Math>{`P_{\\text{guess}}`}</Math>.
         </p>
         
-        <div className="visual-placeholder">
+        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+          <GuessDistributionWithData/>
         </div> 
         
         <p>
           If <Math>{`P_{\\text{guess}}`}</Math> is not a good fit for the data, the likelihood 
           <Math>{`P_{\\text{guess}}(x_1) \\cdot P_{\\text{guess}}(x_2) \\cdot \\ldots \\cdot P_{\\text{guess}}(x_n)`}</Math>
-          will be lower. In this case, data points like <Math>{`x_1`}</Math> or <Math>{`x_3`}</Math> are unexpected in the eyes of <Math>{'P_{\\text{guess}}'}</Math>, so the probabilities <Math>{`P_{\\text{guess}}(x_1)`}</Math> and <Math>{`P_{\\text{guess}}(x_3)`}</Math> drag down the likelihood.
+          will be lower. In this case, data points with a value near 2 or 3 are unexpected in the eyes of <Math>{'P_{\\text{guess}}'}</Math>, so their corresponding probabilities drag down the total likelihood.
         </p>
         
         <h3>Some more examples:</h3>
