@@ -40,19 +40,23 @@ function App() {
         <h2>Likelihood</h2>
         
         <p>
-          Assume we have a distribution, <Math>{`P_{\\text{true}}`}</Math>. It looks like this:
+          Assume we have a distribution, <Math>{`P_{\\text{true}}`}</Math>. 
         </p>
+
+
+        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+          <TrueDistribution/>
+        </div>
         
-        <TrueDistribution/>
         
         <p>
-          We can sample from the distribution one data point at a time (drag the slider).
+          We can sample data points from the distribution one at a time.
         </p>
         
         <TrueDistributionSampled/>
         
         <p>
-          Each of these specific data points <Math>{`x_1, x_2, \\ldots, x_n`}</Math> have a certain 
+          Each of these specific data points <Math>{`x_1, x_2, \\ldots, x_n`}</Math> had a certain 
           probability of being sampled. We write these probabilities as <Math>{`P_{\\text{true}}(x_1), P_{\\text{true}}(x_2), \\ldots, P_{\\text{true}}(x_n)`}</Math>. To calculate the probability of having sampled them all sequentially, we multiply the individual probabilities together:
         </p>
         
@@ -61,7 +65,7 @@ function App() {
         </Math>
         
         <p>
-          This is the "likelihood" of the data. Now assume we have a guess <Math>{`P_{\\text{guess}}`}</Math>.
+          This is the "total likelihood" of the data. Now assume we have a guess <Math>{`P_{\\text{guess}}`}</Math>.
         </p>
         
         <div className="visual-placeholder">
