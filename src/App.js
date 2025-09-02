@@ -78,7 +78,7 @@ function App() {
         <p>
           If <Math>{`P_{\\text{guess}}`}</Math> is not a good fit for the data, the total likelihood 
           <Math>{`P_{\\text{guess}}(x_1) \\cdot P_{\\text{guess}}(x_2) \\cdot \\ldots \\cdot P_{\\text{guess}}(x_n)`}</Math>
-          will be lower. In this case, data points with a value near 2 or 3 are unexpected in the eyes of <Math>{'P_{\\text{guess}}'}</Math>, so their individual likelihoods drag down the total likelihood.
+          will be lower. The total likelihoods are listed on the right side of each graph. In the eyes of <Math>{'P_{\\text{guess}}'}</Math>, data points with a value near <Math>{'x=2'}</Math> or <Math>{'x=3'}</Math> are unexpected, so their individual likelihoods drag down the total likelihood.
         </p>
         
         <h3>Some more examples:</h3>

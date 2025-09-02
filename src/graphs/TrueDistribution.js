@@ -1,6 +1,9 @@
 import React from 'react';
-import Plot from 'react-plotly.js';
+import Plotly from 'plotly.js-basic-dist-min';
+import createPlotlyComponent from 'react-plotly.js/factory';
 import { DISTRIBUTION_PARAMS, GRAPH_SETTINGS } from '../data/constants';
+
+const Plot = createPlotlyComponent(Plotly);
 
 // Generate Gaussian distribution data
 const generateGaussianData = (mean, std, xMin, xMax, numPoints) => {
