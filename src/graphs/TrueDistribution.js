@@ -53,18 +53,18 @@ const TrueDistribution = () => {
     xaxis: {
       range: [0, 10],
       dtick: 1,
-      // title: {
-      //   text: 'value',
-      // },
+      title: {
+        text: 'plant height (feet)',
+      },
       showgrid: false,
       zeroline: false
     },
     yaxis: {
       range: [0, 1],
       dtick: 0.2,
-      // title: {
-      //   text: 'likelihood',
-      // },
+      title: {
+        text: 'likelihood',
+      },
       showgrid: false,
       zeroline: false
     },

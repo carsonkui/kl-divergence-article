@@ -5,47 +5,15 @@ import { SAMPLE_POINTS, DISTRIBUTION_PARAMS, GRAPH_SETTINGS } from '../data/cons
 
 const Plot = createPlotlyComponent(Plotly);
 
-// Generate Gaussian distribution data
-const generateGaussianData = (mean, std, xMin, xMax, numPoints) => {
-  const xData = [];
-  const yData = [];
-  const step = (xMax - xMin) / numPoints;
-  
-  for (let i = 0; i <= numPoints; i++) {
-    const x = xMin + i * step;
-    // Gaussian PDF formula
-    const y = (1 / (std * Math.sqrt(2 * Math.PI))) * 
-              Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
-    
-    xData.push(x);
-    yData.push(y);
-  }
-  
-  return { x: xData, y: yData };
-};
 
-const GuessDistributionWithData = () => {
+const TrueTrajectory = () => {
   const MAX_N = SAMPLE_POINTS.length;
-  const [n, setN] = useState(MAX_N);
+  const [n, setN] = useState(Math.floor(MAX_N / 2));
   const [isPlaying, setIsPlaying] = useState(false);
   const intervalRef = useRef(null);
   
   
-  const gaussianData = generateGaussianData(
-    DISTRIBUTION_PARAMS.guess.mean, 
-    DISTRIBUTION_PARAMS.guess.std, 
-    GRAPH_SETTINGS.xRange[0], 
-    GRAPH_SETTINGS.xRange[1], 
-    GRAPH_SETTINGS.numPoints
-  );
-  
-  const trueGaussianData = generateGaussianData(
-    DISTRIBUTION_PARAMS.true.mean,
-    DISTRIBUTION_PARAMS.true.std,
-    GRAPH_SETTINGS.xRange[0],
-    GRAPH_SETTINGS.xRange[1],
-    GRAPH_SETTINGS.numPoints
-  );
+
   
   // Animation effect
   useEffect(() => {
@@ -78,84 +46,69 @@ const GuessDistributionWithData = () => {
     }
     setIsPlaying(!isPlaying);
   };
-  
-  // Get the first n sample points
-  const visibleSamples = SAMPLE_POINTS.slice(0, n);
-  
-  // Calculate y-values for plotting
-  const sampleYValues = visibleSamples.map(x => {
-    const mean = DISTRIBUTION_PARAMS.guess.mean;
-    const std = DISTRIBUTION_PARAMS.guess.std;
-    return (1 / (std * Math.sqrt(2 * Math.PI))) * 
-           Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
-  });
 
-  const sampleProbabilities = visibleSamples.map(x => {
-    const mean = DISTRIBUTION_PARAMS.guess.mean;
-    const std = DISTRIBUTION_PARAMS.guess.std;
-    return (1 / (std * Math.sqrt(2 * Math.PI))) * 
-           Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
-  });
 
+  const mean = DISTRIBUTION_PARAMS.true.mean;
+  const std = DISTRIBUTION_PARAMS.true.std;
+
+
+
+  // Calculate total likelihood for each number of data points
+  const y_values = [];
+  for (let i = 1; i <= n; i++) {
+    let total_likelihood = 1;
+    for (let j = 1; j <= i; j++) {
+        total_likelihood = (total_likelihood * 
+            (1 / (std * Math.sqrt(2 * Math.PI))) * 
+           Math.exp(-0.5 * Math.pow((SAMPLE_POINTS[j-1] - mean) / std, 2))
+        );
+    }
+    y_values.push(total_likelihood);
+  }
+
+
+  const x_values = Array.from({length: n}, (_, i) => i + 1);
+
+
+
+  let total_likelihood = 1;
+  for (let j = 1; j <= n; j++) {
+      total_likelihood = (total_likelihood * 
+         (1 / (std * Math.sqrt(2 * Math.PI))) * 
+          Math.exp(-0.5 * Math.pow((SAMPLE_POINTS[j-1] - mean) / std, 2))
+      );
+    }
   // multiply all probabilities together
-  const totalLikelihood = sampleProbabilities.reduce((total, curr) => total * curr, 1);
-  const totalLikelihoodString = totalLikelihood.toExponential(2).replace('e-', ' x 10<sup>-') + '</sup>';
+  const totalLikelihoodString = total_likelihood.toExponential(2).replace('e-', ' x 10<sup>-') + '</sup>';
   
   const plotData = [
     {
-      x: trueGaussianData.x,
-      y: trueGaussianData.y,
+      x: x_values,
+      y: y_values,
       type: 'scatter',
       mode: 'lines',
-      fill: 'tozeroy',
       name: 'P_true',
       line: { color: '#4CAF50' },
-      fillcolor: 'rgba(76, 175, 80, 0.3)',
       hoverinfo: 'skip'
     },
-    {
-        x: gaussianData.x,
-        y: gaussianData.y,
-        type: 'scatter',
-        mode: 'lines',
-        fill: 'tozeroy',
-        name: 'P_guess',
-        line: { color: 'rgb(140, 33, 33)' },
-        fillcolor: 'rgba(255, 55, 55, 0.3)',
-        hoverinfo: 'skip'
-    },
-    {
-      x: visibleSamples,
-      y: sampleYValues,
-      type: 'scatter',
-      mode: 'markers',
-      showlegend: false,
-      marker: { 
-        color: 'rgba(64, 64, 64, 0.7)',
-        size: 8
-      },
-      text: visibleSamples.map((x, i) => `x<sub>${i + 1}</sub>`),
-      hovertemplate: '<b style="font-size: 150%">%{text}</b><br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>'
-    }
   ];
-
-  
   
   const layout = {
     width: undefined,
     height: 250,
-    margin: { t: 10, r: 30, l: 40, b: 40 },
+    margin: { t: 10, r: 30, l: 60, b: 40 },
     xaxis: {
-      range: [0, 10],
-      dtick: 1,
-      title: '',
+      range: [0, 50],
+      dtick: 10,
       showgrid: false,
       zeroline: false
     },
     yaxis: {
       range: [0, 1],
       dtick: 0.2,
-      title: '',
+      title: {
+        text: 'total likelihood'
+      }, 
       showgrid: false,
       zeroline: false
     },
@@ -177,7 +130,7 @@ const GuessDistributionWithData = () => {
         showarrow: false,
         font: {
           size: 12,
-          color: 'rgb(140, 33, 33)'
+          color: 'rgb(33, 140, 33)'
         }
       }
     ],
@@ -244,4 +197,4 @@ const GuessDistributionWithData = () => {
   );
 };
 
-export default GuessDistributionWithData;
+export default TrueTrajectory;

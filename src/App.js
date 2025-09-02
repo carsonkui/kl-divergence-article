@@ -8,6 +8,9 @@ import TrueDistribution from './graphs/TrueDistribution';
 import TrueDistributionSampled from './graphs/TrueDistributionSampled';
 import GuessDistributionWithData from './graphs/GuessDistributionWithData';
 import ManyDistributions from './graphs/ManyDistributions';
+import TrueTrajectory from './graphs/TrueTrajectory';
+import TrueTrajectoryLog from './graphs/TrueTrajectoryLog';
+import CompareTrajectory from './graphs/CompareTrajectory';
 
 // import DistributionPlot from './graphs/DistributionPlot';
 // import SamplingAnimation from './graphs/SamplingAnimation';
@@ -29,7 +32,6 @@ function Math({ children, block = false }) {
     <span className="math-inline" dangerouslySetInnerHTML={{ __html: html }} />
   );
 }
-
 function App() {
   return (
     <div className="App">
@@ -42,7 +44,7 @@ function App() {
         <h2>Likelihood</h2>
         
         <p>
-          Assume we have a distribution, <Math>{`P_{\\text{true}}`}</Math>. 
+          Recently, I've been growing tomatoes. Most of my tomato plants are around 3 feet tall, but every time I grow a new one, the height is slighly different. This is their probability distribution:
         </p>
 
 
@@ -52,82 +54,116 @@ function App() {
         
         
         <p>
-          We can sample data points from the distribution one at a time (drag the slider).
+          Let's call this distribution <Math>{`P_{\\text{true}}`}</Math>. We can sample data points from <Math>{`P_{\\text{true}}`}</Math> by growing new tomato plants (drag the slider).
         </p>
         
         <div style={{ marginBottom: '20px', marginTop: '60px'}}>
           <TrueDistributionSampled/>
         </div>
-        
+
         <p>
-          Each of these specific data points <Math>{`x_1, x_2, \\ldots, x_n`}</Math> had a certain 
-          likelihood of being sampled (their y-value on the graph). We write these likelihoods as <Math>{`P_{\\text{true}}(x_1), P_{\\text{true}}(x_2), \\ldots, P_{\\text{true}}(x_n)`}</Math>. To calculate the probability of having sampled them all sequentially, we multiply the individual probabilities together:
+          My friend Gary thinks tomato plants are taller. He claims they are closer to 4 feet tall. We label his probability distribution <Math>{`P_{\\text{gary}}`}</Math>:
         </p>
         
-        <Math block>
-          {`P_{\\text{true}}(x_1) \\cdot P_{\\text{true}}(x_2) \\cdot \\ldots \\cdot P_{\\text{true}}(x_n)`}
-        </Math>
         
-        <p>
-          This is the "total likelihood" of the data. Now assume we have a guess <Math>{`P_{\\text{guess}}`}</Math>.
-        </p>
         
         <div style={{ marginBottom: '20px', marginTop: '60px'}}>
           <GuessDistributionWithData/>
         </div> 
+
+
+        <p>
+          Obviously, Gary is wrong. I know my tomato plants. And they are ~3 feet tall.
+        </p> 
+
+        <p>
+          But how can we prove to Gary, based on the tomato plants I have grown (the black dots on the graph), that my distribution <Math>{`P_{\\text{true}}`}</Math> is more realistic?
+          For this, we need the 'total likelihood' of the data.
+        </p>
+
+        <p>
+          If <Math>{`P_{\\text{true}}`}</Math> is the real distribution, the likelihood of tomato plant 1 being 3.3 feet tall is 0.65 (confirm this by hovering over the first graph). We write the height of tomato plant 1 as <Math>{`x_1`}</Math>, and the likelihood as <Math>{`P_{\\text{true}} (x_1) = 0.655`}</Math>. 
+          Generally, for heights <Math>{`x_1, x_2, \\ldots, x_n`}</Math>, we have likelihoods <Math>{`P_{\\text{true}}(x_1), P_{\\text{true}}(x_2), \\ldots, P_{\\text{true}}(x_n)`}</Math>.
+
+          The 'total likelihood' of our 50 data points is defined as how likely 50 <b>new</b> plants are to have the exact same heights as <Math>{`x_1, x_2, \\ldots, x_{50}`}</Math>. To calculate this, we multiply the likelihoods:
+                  </p>
+
+        <Math block>
+          {`P_{\\text{true}}(x_1) \\cdot P_{\\text{true}}(x_2) \\cdot \\ldots \\cdot P_{\\text{true}}(x_{50}) = 2.16 x 10^{-16}`}
+          </Math>
+
+        <p>
+          Let's look back at the graph of <Math>{`P_{\\text{guess}}`}</Math>. Notice how the data does not rest as nicely on Gary's distribution. Visually, you can tell that <Math>{`P_{\\text{true}}`}</Math> was a much better fit. 
+          When we calculate the total likelihood that our plants came from Gary's distribution, we get:
+        </p>
+
+        <Math block>
+          {`P_{\\text{guess}}(x_1) \\cdot P_{\\text{guess}}(x_2) \\cdot \\ldots \\cdot P_{\\text{guess}}(x_{50}) = 3.34 x 10^{-63}`}
+        </Math>
+
+
         
         <p>
-          If <Math>{`P_{\\text{guess}}`}</Math> is not a good fit for the data, the total likelihood 
-          <Math>{`P_{\\text{guess}}(x_1) \\cdot P_{\\text{guess}}(x_2) \\cdot \\ldots \\cdot P_{\\text{guess}}(x_n)`}</Math>
-          will be lower. In the case of <Math>{'P_{\\text{guess}}'}</Math>, data points with a value near <Math>{'x=2'}</Math> or <Math>{'x=3'}</Math> are unexpected, so their individual likelihoods drag down the total likelihood.
+          This total likelihood is much lower than <Math>{`P_{\\text{true}}`}</Math>'s. We conclude that distribution <Math>{`P_{\\text{guess}}`}</Math> is not as realistic as <Math>{`P_{\\text{true}}`}</Math>. Clearly, Gary was very silly to question my tomato plant knowledge.
+        </p>
+
+        <p>
+          Gary aside, this property of 'more realistic distribution = higher total likelihood' is incredibly useful — it works for all distributions.
         </p>
         
-        <h3>Some more examples:</h3>
+        <h3>Some other examples</h3>
         
         <div style={{ marginBottom: '20px', marginTop: '60px'}}>
           <ManyDistributions/>
         </div> 
         
         <p>
-          The distribution <Math>{`P_{\\text{true}}`}</Math> should generally have the highest total likelihood. 
+          The distribution <Math>{`P_{\\text{true}}`}</Math> should generally have the highest 'total likelihood'. 
           The more data points we sample, the more clearly <Math>{`P_{\\text{true}}`}</Math> stands out as the best. 
-          Look up "maximum likelihood estimation" for a more rigorous explanation.
+          Look up "maximum likelihood estimation" to learn more.
         </p>
         
         <p>
-          For our purposes, only the intuition is important: The likelihood measures 'how well' 
-          a distribution models the data, and the best distribution is the <b>true</b> distribution.
+          For our purposes, only the intuition is important: The total likelihood measures 'how well' 
+          a distribution models the data.
         </p>
         
         <div className="callout">
-          If this point does not feel comfortable, spend a bit longer here. 
-          (or, give me some feedback to make this section more clear! I'M TALKING TO YOU, PROOF READERS :0 )
+          If this point is not clear, spend a bit longer here. 
+          (or, give me some feedback to make this section more clear! )
         </div>
         
         <h2>KL Divergence</h2>
         
         <p>
           As we sample data points one by one from <Math>{`P_{\\text{true}}`}</Math>, 
-          let's plot how the likelihood evolves.
+          let's plot how the total likelihood evolves.
         </p>
-        
-        <div className="visual-placeholder">
-        </div> 
-        
+        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+          <TrueTrajectory/>
+        </div>
+
+        <p>
+          The total likelihood gets small very fast. Let's switch to the log scale instead.
+        </p>
+
+        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+          <TrueTrajectoryLog/>
+        </div>
+        <p>
+          Much better.
+        </p>
+
         <p>
           Now let's compare it with <Math>{`P_{\\text{guess}}`}</Math>.
         </p>
         
-        <p>
-          These likelihoods get very small very fast. Let's switch to the log scale instead.
-        </p>
         
-        <div className="visual-placeholder">
-        </div> 
+        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+          <CompareTrajectory/>
+        </div>
         
-        <p>
-          Much better.
-        </p>
+
         
         <p>
           We can see <Math>{`P_{\\text{true}}`}</Math> is better at explaining the data because its 
@@ -165,14 +201,14 @@ function App() {
         <h3>The Formula</h3>
 
         <p>
-          How do we calculate the average lines of <Math>{`P_{\\text{true}}`}</Math> and <Math>{`P_{\\text{guess}}`}</Math>? Let's compute the average line of <Math>{`P_{\\text{guess}}`}</Math> at <Math>{`n=4`}</Math> to illustrate.
+          How do we calculate the KL Divergence? To get our hands dirty, let's start by looking at the average line of <Math>{`P_{\\text{guess}}`}</Math> when <Math>{`n=4`}</Math>.
         </p>
 
         <div className="visual-placeholder">
         </div> 
 
         <p>
-          We start with the likelihoods at <Math>{`n=4`}</Math>. Remember, different colors are different trials.
+          We start with the likelihoods. Remember, different colors are different trials.
         </p>
 
         <div className="visual-placeholder">
@@ -219,7 +255,7 @@ function App() {
         <div className="visual-placeholder">
         </div> 
 
-        To calculate the KL divergence, we take the difference in slopes.
+        All that's left is to take the difference in slopes.
 
         
 
@@ -234,11 +270,11 @@ function App() {
         </p>
 
         <p>
-            Congratulations on making it to the end :). If you are hungry for more, the second section explains KL divergence using a complimentary algebraic approach.
+            Congratulations on making it to the end :). If you are hungry for more, the second installment will explain KL divergence with greater rigour.
         </p>
         
         <div className="fun-asides">
-          <h3>Some fun asides:</h3>
+          <h3>Fun asides:</h3>
           <ul>
             <li>
               The slope of <Math>{`P_{\\text{true}}`}</Math>'s average line is called the entropy 
@@ -252,17 +288,7 @@ function App() {
           </ul>
         </div>
         
-        <div className="conclusion">
-          <p>
-            That's it! The KL divergence measures how different two probability distributions are. 
-            Or more precisely, it measures how well distribution <Math>{`P_{\\text{guess}}`}</Math> models 
-            data drawn from distribution <Math>{`P_{\\text{true}}`}</Math>.
-          </p>
-          
-          <p>
-            For the more adventurous reader, a rigorous analysis follows...
-          </p>
-        </div>
+        
       </article>
     </div>
   );

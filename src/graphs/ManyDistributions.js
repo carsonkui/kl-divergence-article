@@ -70,10 +70,19 @@ const gaussianLikelihoodString = (mean, std) => {
 
 const ManyDistributions = () => {
   // Define the means for each subplot
-  const means = [3, 4, 5, 2.5];
-  const std = DISTRIBUTION_PARAMS.true.std;
   const solid_red = 'rgb(140, 33, 33)';
   const transparent_red = 'rgba(255, 55, 55, 0.3)';
+  const solid_green = '#4CAF50';
+  const transparent_green = 'rgba(76, 175, 80, 0.3)';
+  
+  // Generate true distribution data once
+  const trueGaussianData = generateGaussianData(
+    DISTRIBUTION_PARAMS.true.mean,
+    DISTRIBUTION_PARAMS.true.std,
+    GRAPH_SETTINGS.xRange[0],
+    GRAPH_SETTINGS.xRange[1],
+    GRAPH_SETTINGS.numPoints
+  );
 
 
   // Calculate y-values for sample points based on Gaussian PDF
@@ -84,71 +93,6 @@ const ManyDistributions = () => {
            Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
   });
 
-
-
-  const samples = [
-    {
-      x: SAMPLE_POINTS,
-      y: sampleYValues,
-      type: 'scatter',
-      mode: 'markers',
-      showlegend: false,
-      marker: { 
-        color: 'rgba(64, 64, 64, 0.7)',
-        size: 8
-      },
-      text: SAMPLE_POINTS.map((x, i) => `x<sub>${i + 1}</sub>`),
-      hovertemplate: '<b style="font-size: 150%">%{text}</b><br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>',
-      xaxis: 'x',
-      yaxis: 'y',
-    },
-    {
-      x: SAMPLE_POINTS,
-      y: sampleYValues,
-      type: 'scatter',
-      mode: 'markers',
-      showlegend: false,
-      marker: { 
-        color: 'rgba(64, 64, 64, 0.7)',
-        size: 8
-      },
-      text: SAMPLE_POINTS.map((x, i) => `x<sub>${i + 1}</sub>`),
-      hovertemplate: '<b style="font-size: 150%">%{text}</b><br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>',
-      xaxis: 'x2',
-      yaxis: 'y',
-    },
-    {
-      x: SAMPLE_POINTS,
-      y: sampleYValues,
-      type: 'scatter',
-      mode: 'markers',
-      showlegend: false,
-      marker: { 
-        color: 'rgba(64, 64, 64, 0.7)',
-        size: 8
-      },
-      text: SAMPLE_POINTS.map((x, i) => `x<sub>${i + 1}</sub>`),
-      hovertemplate: '<b style="font-size: 150%">%{text}</b><br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>',
-      xaxis: 'x',
-      yaxis: 'y2',
-    },
-    {
-      x: SAMPLE_POINTS,
-      y: sampleYValues,
-      type: 'scatter',
-      mode: 'markers',
-      showlegend: false,
-      marker: { 
-        color: 'rgba(64, 64, 64, 0.7)',
-        size: 8
-      },
-      text: SAMPLE_POINTS.map((x, i) => `x<sub>${i + 1}</sub>`),
-      hovertemplate: '<b style="font-size: 150%">%{text}</b><br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>',
-      xaxis: 'x2',
-      yaxis: 'y2',
-    },
-
-  ];
 
 
   const totalLikelihoodString = gaussianLikelihoodString(3, 0.5);
@@ -170,8 +114,7 @@ const ManyDistributions = () => {
   };
 
 
-  const sampleProbabilities = SAMPLE_POINTS.map(x => mixedGaussianProb(gaussian1, gaussian2, x));
-
+  let sampleProbabilities = SAMPLE_POINTS.map(x => mixedGaussianProb(gaussian1, gaussian2, x));
 
   // multiply all probabilities together
   const totalLikelihood = sampleProbabilities.reduce((total, curr) => total * curr, 1);
@@ -187,6 +130,20 @@ const ManyDistributions = () => {
     GRAPH_SETTINGS.numPoints
   );
 
+  const truePlot1 = {
+    x: trueGaussianData.x,
+    y: trueGaussianData.y,
+    type: 'scatter',
+    mode: 'lines',
+    fill: 'tozeroy',
+    name: 'P_true',
+    line: { color: solid_green },
+    fillcolor: transparent_green,
+    xaxis: 'x',
+    yaxis: 'y',
+    showlegend: true
+  };
+
   const plot1 = {
     x: data.x,
     y: data.y,
@@ -201,28 +158,60 @@ const ManyDistributions = () => {
     showlegend: true
   }
 
+  const samples1 = {
+    x: SAMPLE_POINTS,
+    y: sampleProbabilities,
+    type: 'scatter',
+    mode: 'markers',
+    showlegend: false,
+    marker: { 
+      color: 'rgba(64, 64, 64, 0.7)',
+      size: 8
+    },
+    text: SAMPLE_POINTS.map((x, i) => `x<sub>${i + 1}</sub>`),
+    hovertemplate: '<b style="font-size: 150%">%{text}</b><br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>',
+    xaxis: 'x',
+    yaxis: 'y',
+  };
+
 
 
   // plot 2
 
-  const likelihood2 = gaussianLikelihoodString(3.5, 0.5);
+  let mean = 3.5;
+  let std = 0.5;
+
+  const likelihood2 = gaussianLikelihoodString(mean, std);
   
 
   data = generateGaussianData(
-    3.5,
-    0.5,
+    mean,
+    std,
     GRAPH_SETTINGS.xRange[0],
     GRAPH_SETTINGS.xRange[1],
     GRAPH_SETTINGS.numPoints
   );
 
+  const truePlot2 = {
+    x: trueGaussianData.x,
+    y: trueGaussianData.y,
+    type: 'scatter',
+    mode: 'lines',
+    fill: 'tozeroy',
+    name: 'P_true',
+    line: { color: solid_green },
+    fillcolor: transparent_green,
+    xaxis: 'x2',
+    yaxis: 'y',
+    showlegend: true
+  };
+
   const plot2 = {
-    x: data.x,
+    x: data.x, 
     y: data.y,
     type: 'scatter',
     mode: 'lines',
     fill: 'tozeroy',
-    name: `μ=3`,
     line: { color: solid_red },
     fillcolor: transparent_red,
     xaxis: 'x2',
@@ -231,17 +220,56 @@ const ManyDistributions = () => {
   }
 
 
+
+  sampleProbabilities = SAMPLE_POINTS.map(x => {
+    return (1 / (std * Math.sqrt(2 * Math.PI))) * 
+           Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
+  });
+  const samples2 = {
+    x: SAMPLE_POINTS,
+    y: sampleProbabilities,
+    type: 'scatter',
+    mode: 'markers',
+    showlegend: false,
+    marker: { 
+      color: 'rgba(64, 64, 64, 0.7)',
+      size: 8
+    },
+    text: SAMPLE_POINTS.map((x, i) => `x<sub>${i + 1}</sub>`),
+    hovertemplate: '<b style="font-size: 150%">%{text}</b><br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>',
+    xaxis: 'x2',
+    yaxis: 'y',
+  };
+
+
   // plot 3
 
-  const likelihood3 = gaussianLikelihoodString(3, 0.4);
+  mean = 3;
+  std = 0.4;
+
+  const likelihood3 = gaussianLikelihoodString(mean, std);
 
   data = generateGaussianData(
-    3,
-    0.4,
+    mean,
+    std,
     GRAPH_SETTINGS.xRange[0],
     GRAPH_SETTINGS.xRange[1],
     GRAPH_SETTINGS.numPoints
   );
+
+  const truePlot3 = {
+    x: trueGaussianData.x,
+    y: trueGaussianData.y,
+    type: 'scatter',
+    mode: 'lines',
+    fill: 'tozeroy',
+    name: 'P_true',
+    line: { color: solid_green },
+    fillcolor: transparent_green,
+    xaxis: 'x',
+    yaxis: 'y2',
+    showlegend: true
+  };
 
   const plot3 = {
     x: data.x,
@@ -249,7 +277,6 @@ const ManyDistributions = () => {
     type: 'scatter',
     mode: 'lines',
     fill: 'tozeroy',
-    name: `μ=3`,
     line: { color: solid_red},
     fillcolor: transparent_red,
     xaxis: 'x',
@@ -257,18 +284,55 @@ const ManyDistributions = () => {
     showlegend: true
   }
 
+  sampleProbabilities = SAMPLE_POINTS.map(x => {
+    return (1 / (std * Math.sqrt(2 * Math.PI))) * 
+           Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
+  });
+  const samples3 = {
+    x: SAMPLE_POINTS,
+    y: sampleProbabilities,
+    type: 'scatter',
+    mode: 'markers',
+    showlegend: false,
+    marker: { 
+      color: 'rgba(64, 64, 64, 0.7)',
+      size: 8
+    },
+    text: SAMPLE_POINTS.map((x, i) => `x<sub>${i + 1}</sub>`),
+    hovertemplate: '<b style="font-size: 150%">%{text}</b><br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>',
+    xaxis: 'x',
+    yaxis: 'y2',
+  };
+
 
   // plot 4
 
-  const likelihood4 = gaussianLikelihoodString(3, 0.8);
+  mean = 3;
+  std = 0.8;
+
+  const likelihood4 = gaussianLikelihoodString(mean, std);
 
   data = generateGaussianData(
-    3,
-    0.8,
+    mean,
+    std,
     GRAPH_SETTINGS.xRange[0],
     GRAPH_SETTINGS.xRange[1],
     GRAPH_SETTINGS.numPoints
   );
+
+  const truePlot4 = {
+    x: trueGaussianData.x,
+    y: trueGaussianData.y,
+    type: 'scatter',
+    mode: 'lines',
+    fill: 'tozeroy',
+    name: 'P_true',
+    line: { color: solid_green },
+    fillcolor: transparent_green,
+    xaxis: 'x2',
+    yaxis: 'y2',
+    showlegend: true
+  };
 
   const plot4 = {
     x: data.x,
@@ -276,7 +340,6 @@ const ManyDistributions = () => {
     type: 'scatter',
     mode: 'lines',
     fill: 'tozeroy',
-    name: `μ=3`,
     line: { color: solid_red},
     fillcolor: transparent_red,
     xaxis: 'x2',
@@ -284,11 +347,31 @@ const ManyDistributions = () => {
     showlegend: true
   }
 
+  sampleProbabilities = SAMPLE_POINTS.map(x => {
+    return (1 / (std * Math.sqrt(2 * Math.PI))) * 
+           Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
+  });
+  const samples4 = {
+    x: SAMPLE_POINTS,
+    y: sampleProbabilities,
+    type: 'scatter',
+    mode: 'markers',
+    showlegend: false,
+    marker: { 
+      color: 'rgba(64, 64, 64, 0.7)',
+      size: 8
+    },
+    text: SAMPLE_POINTS.map((x, i) => `x<sub>${i + 1}</sub>`),
+    hovertemplate: '<b style="font-size: 150%">%{text}</b><br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>',
+    xaxis: 'x2',
+    yaxis: 'y2',
+  };
+
 
 
   
   // Generate data for all 4 distributions
-  const plotData = [plot1, plot2, plot3, plot4, ...samples];
+  const plotData = [truePlot1, truePlot2, truePlot3, truePlot4, plot1, plot2, plot3, plot4, samples1, samples2, samples3, samples4];
   
   // Create a 2x2 grid layout with shared axes
   const layout = {
