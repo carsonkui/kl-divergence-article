@@ -84,7 +84,7 @@ const plotTrial = (trialNum, n) => {
 };
 
 
-const MasterGraph = () => {
+const AverageTrajectories = () => {
   const MAX_N = SAMPLE_POINTS.length;
   const [n, setN] = useState(Math.floor(MAX_N / 2));
   const [isPlaying, setIsPlaying] = useState(false);
@@ -170,31 +170,6 @@ const MasterGraph = () => {
     }
   );
 
-  // Log the values of ptrue_avg_y and pguess_avg_y
-  console.log('ptrue_avg_y:', ptrue_avg_y);
-  console.log('pguess_avg_y:', pguess_avg_y);
-
-  // Log the value of n
-  console.log('Current n:', n);
-
-  let kl_line = {
-    x: [n, n],
-    y: [ptrue_avg_y[n-1], pguess_avg_y[n-1]],
-    type: 'scatter',
-    mode: 'lines+markers',
-    name: 'KL divergence line',
-    line: { 
-      color: '#4A148C',
-      width: 4
-    },
-    marker: {
-      size: 8,
-      color: '#4A148C',
-      symbol: ['circle', 'circle']
-    },
-  };
-
-
 
 
 
@@ -223,12 +198,9 @@ const MasterGraph = () => {
   };
 
 
-  plotData = [...plotData, ptrue_avg_plot, pguess_avg_plot, kl_line];
+  plotData = [...plotData, ptrue_avg_plot, pguess_avg_plot];
 
 
-  
-  // Calculate midpoint of KL line for annotation placement (geometric mean for log scale)
-  const klMidpointY = Math.sqrt(ptrue_avg_y[n-1] * pguess_avg_y[n-1]);
   
   const layout = {
     width: undefined,
@@ -260,22 +232,6 @@ const MasterGraph = () => {
       xanchor: 'right',
       y: 1
     },
-    annotations: [
-      {
-        x: n + 1,
-        y: Math.log(klMidpointY) * 0.6,
-        xref: 'x',
-        yref: 'y',
-        text: `KL(P<sub>true</sub> || P<sub>guess</sub>) * ${n}`,
-        showarrow: false,
-        xanchor: 'left',
-        yanchor: 'middle',
-        font: {
-          size: 14,
-          color: '#4A148C'
-        }
-      }
-    ],
     plot_bgcolor: 'white',
     paper_bgcolor: 'white'
   };
@@ -339,4 +295,4 @@ const MasterGraph = () => {
   );
 };
 
-export default MasterGraph;
+export default AverageTrajectories;

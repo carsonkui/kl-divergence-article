@@ -12,6 +12,7 @@ import TrueTrajectory from './graphs/TrueTrajectory';
 import TrueTrajectoryLog from './graphs/TrueTrajectoryLog';
 import CompareTrajectory from './graphs/CompareTrajectory';
 import TwoTrialTrajectory from './graphs/TwoTrialTrajectory';
+import AverageTrajectories from './graphs/AverageTrajectories';
 import MasterGraph from './graphs/MasterGraph';
 
 // import DistributionPlot from './graphs/DistributionPlot';
@@ -187,15 +188,19 @@ function App() {
         </p>
         
         <div style={{ marginBottom: '20px', marginTop: '60px'}}>
-          <MasterGraph/>
+          <AverageTrajectories/>
         </div>
         
         <p>
-          The rate at which these <em>averages</em> diverge is the official KL divergence 
+          The rate at which the <em>averages</em> diverge is the official KL divergence 
           of <Math>{`P_{\\text{guess}}`}</Math> with respect to <Math>{`P_{\\text{true}}`}</Math>. 
           This is denoted as <Math>{`\\text{KL}(P_{\\text{true}} \\,||\\, P_{\\text{guess}})`}</Math>. 
           You can also view the KL divergence as the difference in the averages' slopes.
         </p>
+
+        <div style={{ marginBottom: '20px', marginTop: '60px'}}>
+          <MasterGraph/>
+        </div>
         
         <p>
           A larger KL divergence means that <Math>{`P_{\\text{guess}}`}</Math> is worse at 
