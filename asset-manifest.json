@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/kl-divergence-article/static/css/main.df1b2e5c.css",
-    "main.js": "/kl-divergence-article/static/js/main.37ed99c5.js",
+    "main.js": "/kl-divergence-article/static/js/main.32c4f9ad.js",
     "static/js/206.e8fa536c.chunk.js": "/kl-divergence-article/static/js/206.e8fa536c.chunk.js",
     "static/media/KaTeX_AMS-Regular.ttf": "/kl-divergence-article/static/media/KaTeX_AMS-Regular.853be92419a6c3766b9a.ttf",
     "static/media/KaTeX_Main-Regular.ttf": "/kl-divergence-article/static/media/KaTeX_Main-Regular.9eba1d77abcf2aa6e94e.ttf",
@@ -67,6 +67,6 @@
   },
   "entrypoints": [
     "static/css/main.df1b2e5c.css",
-    "static/js/main.37ed99c5.js"
+    "static/js/main.32c4f9ad.js"
   ]
 }
